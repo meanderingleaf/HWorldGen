@@ -43,6 +43,8 @@ class Assets {
 			
 			resourceClasses.set ("Beep", NME_assets_data_beep_mp3);
 			resourceTypes.set ("Beep", "sound");
+			resourceClasses.set ("assets/boik.png", NME_assets_boik_png);
+			resourceTypes.set ("assets/boik.png", "image");
 			resourceClasses.set ("assets/data/autotiles.png", NME_assets_data_autotiles_png);
 			resourceTypes.set ("assets/data/autotiles.png", "image");
 			resourceClasses.set ("assets/data/autotiles_alt.png", NME_assets_data_autotiles_alt_png);

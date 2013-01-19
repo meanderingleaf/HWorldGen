@@ -94,6 +94,11 @@ class ApplicationMain {
             return Assets.getSound ("Beep");
          
 		
+		if (inName=="assets/boik.png")
+			 
+            return Assets.getBitmapData ("assets/boik.png");
+         
+		
 		if (inName=="assets/data/autotiles.png")
 			 
             return Assets.getBitmapData ("assets/data/autotiles.png");
@@ -309,6 +314,7 @@ class ApplicationMain {
 }
 
 class NME_assets_data_beep_mp3 extends nme.media.Sound { }
+class NME_assets_boik_png extends nme.display.BitmapData { public function new () { super (0, 0); } }
 class NME_assets_data_autotiles_png extends nme.display.BitmapData { public function new () { super (0, 0); } }
 class NME_assets_data_autotiles_alt_png extends nme.display.BitmapData { public function new () { super (0, 0); } }
 class NME_assets_data_base_png extends nme.display.BitmapData { public function new () { super (0, 0); } }

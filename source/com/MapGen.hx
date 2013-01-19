@@ -13,7 +13,7 @@ import flash.geom.Point;
 class MapGen 
 {
 
-	private var logo:Bitmap;
+	private var debugBitmap:Bitmap;
 	private var bdat:BitmapData;
 	private var finalDat:BitmapData;
 	public var finalMap:Bitmap;
@@ -23,45 +23,70 @@ class MapGen
 	public function new() 
 	{
 		
+		//base bitmap & data to work off of
 		bdat = new BitmapData(40, 40);
 		bdat.perlinNoise(4, 4, 10, 5, false, false, 7, true);
-		logo = new Bitmap(bdat);
-		//addChild (logo);
-		logo.scaleX = logo.scaleY = 5;
+		debugBitmap = new Bitmap(bdat);
+		debugBitmap.scaleX = debugBitmap.scaleY = 5;
 		
+		//generate noise for a 'hightmap'
 		var landdat:BitmapData = new BitmapData(40, 40);
 		landdat.perlinNoise(20, 20, 1, 5, false, true, 7, true);
 		var lmap:Bitmap = new Bitmap(landdat);
-		lmap.scaleX = lmap.scaleY = 5;
-		//addChild(lmap);
 		
+		//convert the heightmap into bodies of water. Set everything < 0x666666 to blue, everything else is invisible
 		var lakedat:BitmapData = new BitmapData(40, 40);
 		lakedat.threshold(landdat, landdat.rect, new Point(0, 0), "<",  0xFF666666, 0xFF0000FF, 0xFFFFFFFF, false); 
 		lakedat.threshold(landdat, landdat.rect, new Point(0, 0), ">=",  0xFF666666, 0x00000000, 0xFFFFFFFF, false); 
 		var lakemap:Bitmap = new Bitmap(lakedat);
-		lakemap.scaleX = lakemap.scaleY = 5;
-		//addChild(lakemap);
 		
+		//okay, we have our heightmap & lake data, combine them.
+		
+		//draw the heightmap
 		finalDat = new BitmapData(40, 40);
 		finalDat.copyPixels(landdat, landdat.rect, new Point(0, 0));
+		
+		//colorize the hightmap
 		setTiles();
+		
+		//draw the water map
 		finalDat.draw(lakedat);
+		
+		//convert to A* map stuff
+		var m:Array<Array<SNode>> = toSMap();
+		
+		//make a class that will run the A* stuff
+		p = new Pather();
+		
+		//get the path of nodes from the pather
+		var parth:Array<SNode> = p.findPath(m[10][0], m[25][39], m);
+		
+		//send the path to be drawn to the bitmap data
+		//draws a river to the bitmap
+		drawPath(parth);
+		
+		//not quite doing what I want, applies a 'blur' to the map to change the edges between areas
+		//needs a couple of entra rules to keep some of the sharp transitions I desire
+		//blendTiles();
+		
+		//add debug data
+		//addChild (debugBitmap);
+		//addChild(lakemap);
+		//lakemap.scaleX = lakemap.scaleY = 5;
+		//addChild(lmap);
+		//lmap.scaleX = lmap.scaleY = 5;
+		//addChild(finalMap);
+		
+		//final map debug
 		finalMap = new Bitmap(finalDat);
 		finalMap.scaleX = finalMap.scaleY = 7;
 		finalMap.x = 400;
-		//addChild(finalMap);
 		
-		var m:Array<Array<SNode>> = toSMap();
-		p = new Pather();
-		var parth:Array<SNode> = p.findPath(m[10][0], m[25][39], m);
-		drawPath(parth);
-		
-		//blendTiles();
-		
+		//change the bitmap data to an array of ints
 		var tmarp:Array<Array<Int>> = toTMap();
 		
+		//and then to a string that Flixel understands
 		finalString = twoString(tmarp);
-		
 	}
 	
 	
@@ -157,10 +182,7 @@ class MapGen
 	
 	private function drawPath(pa:Array<SNode>, numBridges:Int = 2):Void {
 		
-		
-		
 		for (p in pa) {
-			//trace(p.x + "," + p.y);
 			finalDat.setPixel(p.x, p.y, 0x0000FF);
 		}
 		
@@ -194,6 +216,8 @@ class MapGen
 			ret.push( new Array<Int>() );
 			for(y in 0 ... finalDat.height) {
 				var colour:Int = finalDat.getPixel(x, y);
+				
+				//shift bits
 				var r:Int = (colour >> 16) & 0xff;
 				var g:Int = (colour >> 8) & 0xff;
 				var b:Int = colour & 0xff;
@@ -207,11 +231,13 @@ class MapGen
 				if (g > 0) {
 					if (b > 0) 	til = Math.round(g / 50); //place 'blend' version of the tile
 					else 		til = Math.round(g / 50);
+					
+					trace(til);
 				}
+				
 				
 				//speshul tiles
 				if (r > 0) {
-					trace('haw');
 					til = 22;
 				}
 				
@@ -226,11 +252,7 @@ class MapGen
 		return ret;
 	}
 	
-	public function toWalkMap():Void {
-		
-		
-	}
-	
+	//A* stuff
 	private function toSMap():Array<Array<SNode>> {
 		var ret:Array<Array<SNode>> = new Array<Array<SNode>>();
 	

@@ -17,6 +17,7 @@ import org.flixel.FlxText;
 import org.flixel.FlxU;
 import com.htest.Dog;
 import com.htest.Playa;
+import com.htest.ItemPlacement;
 import com.MapGen;
 import org.flixel.FlxTilemap;
 
@@ -31,8 +32,11 @@ class GameState extends FlxState
 	private var mg:MapGen;
 	
 	override public function create():Void {
+		
+		//setup map
 		mg = new MapGen();
-
+		
+		//load it in
 		map = new FlxTilemap();
 		add(map);
 		map.loadMap(mg.finalString, "assets/tiles.png", 20, 20, 0, 0, 1, 9);
@@ -42,13 +46,19 @@ class GameState extends FlxState
 		map.setTileProperties(22, FlxObject.NONE);
 		map.setTileProperties(23, FlxObject.NONE);
 		
+		//place items
+		ItemPlacement.placeTrees(map, this);
+		
+		//player!
 		player = new Playa();
 		add(player);
 		
+		//stage setup
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN_TIGHT);
 		FlxG.camera.setBounds(0, 0, map.width, map.height);
 		FlxG.worldBounds = new FlxRect(0, 0, map.width, map.height);
 		
+		//doggie!
 		dog = new Dog();
 		dog.x = 1;
 		dog.y = 1;
