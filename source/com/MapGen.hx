@@ -231,8 +231,6 @@ class MapGen
 				if (g > 0) {
 					if (b > 0) 	til = Math.round(g / 50); //place 'blend' version of the tile
 					else 		til = Math.round(g / 50);
-					
-					trace(til);
 				}
 				
 				

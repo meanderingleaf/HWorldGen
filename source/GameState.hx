@@ -1,9 +1,11 @@
 package;
 
+import browser.text.TextSnapshot;
 import com.htest.ChaseAtty;
 import nme.Assets;
 import nme.geom.Rectangle;
 import nme.net.SharedObject;
+import org.flixel.FlxBasic;
 import org.flixel.FlxButton;
 import org.flixel.FlxCamera;
 import org.flixel.FlxG;
@@ -48,6 +50,7 @@ class GameState extends FlxState
 		
 		//place items
 		ItemPlacement.placeTrees(map, this);
+		ItemPlacement.placeBushes(map, this);
 		
 		//player!
 		player = new Playa();
@@ -63,14 +66,45 @@ class GameState extends FlxState
 		dog.x = 1;
 		dog.y = 1;
 		dog.addAtty(new ChaseAtty(player, 30));
-		add(dog);
+		//add(dog);
+		
+		//sort();
+		
+		//var sha:TestShader = new TestShader();
 	}
 	
 	override public function update():Void {
 		super.update();
+		
+		//zelda style sorting
+		//very slow
+		//this.sort();
+		
 		FlxG.collide(map, player);
 		FlxG.collide(map, dog);
 	}
+	
+	private function sortHandlerByY(Ob1:FlxBasic, Ob2:FlxBasic):Int
+	{
+		var Obj1:FlxObject = cast(Ob1, FlxObject);
+		var Obj2:FlxObject = cast(Ob2, FlxObject);
+		
+		if (Obj1.y < Obj2.y)
+			return _sortOrder;
+		else if (Obj1.y > Obj2.y)
+			return -_sortOrder;
+		else
+			return 0;
+	}
+	
+	override public function draw():Void
+	{
+		// Sort sprites by their 'y' value before drawing them
+		this._sortOrder = -1;
+		this.members.sort(sortHandlerByY);
+		super.draw();
+	}
+	
 	override public function destroy():Void
 	{
 		super.destroy();
