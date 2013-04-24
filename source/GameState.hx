@@ -1,6 +1,7 @@
 package;
 
 import browser.text.TextSnapshot;
+import com.Glowbals;
 import com.htest.ChaseAtty;
 import nme.Assets;
 import nme.geom.Rectangle;
@@ -22,6 +23,7 @@ import com.htest.Playa;
 import com.htest.ItemPlacement;
 import com.MapGen;
 import org.flixel.FlxTilemap;
+
 
 class GameState extends FlxState
 {
@@ -69,7 +71,7 @@ class GameState extends FlxState
 		//add(dog);
 		
 		//sort();
-		
+		FlxG.mouse.show();
 		//var sha:TestShader = new TestShader();
 	}
 	
@@ -100,6 +102,7 @@ class GameState extends FlxState
 	override public function draw():Void
 	{
 		// Sort sprites by their 'y' value before drawing them
+		Glowbals.padView.update();
 		this._sortOrder = -1;
 		this.members.sort(sortHandlerByY);
 		super.draw();

@@ -98,7 +98,7 @@ class ItemPlacement
 		bd.draw(g);
 		
 		var t:FlxSprite = new FlxSprite();
-		t.setPixels(bd);
+		t.pixels = bd;
 		
 		return t;
 	}
@@ -136,7 +136,7 @@ class ItemPlacement
 		bd.draw(g);
 		
 		var t:FlxSprite = new FlxSprite();
-		t.setPixels(bd);
+		t.pixels = bd;
 		
 		
 		//t.loadGraphic("assets/boik.png");

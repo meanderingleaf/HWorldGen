@@ -2,6 +2,7 @@ package com.htest;
 import org.flixel.FlxG;
 import org.flixel.FlxObject;
 import org.flixel.FlxSprite;
+import com.Glowbals;
 
 /**
  * ...
@@ -30,6 +31,18 @@ class Playa extends FlxSprite
 	
 	override public function update():Void {
 		
+		velocity.x = Glowbals.pad.x * walkSpeed;
+		velocity.y = Glowbals.pad.y * walkSpeed;
+		
+		if (Math.abs( Glowbals.pad.y) > Math.abs( Glowbals.pad.x)) {
+			if ( Glowbals.pad.y < 0) play("Up");
+			else play("Down");
+		} else {
+			if ( Glowbals.pad.x < 0) play("Left");
+			else play("Right");
+		}
+		
+		/*
 		
 		if (FlxG.keys.W && FlxG.keys.D) {
 			play("Up");
@@ -66,6 +79,7 @@ class Playa extends FlxSprite
 		} else {
 			this.frame = this.frame;
 		}
+		*/
 		
 		super.update();
 	}

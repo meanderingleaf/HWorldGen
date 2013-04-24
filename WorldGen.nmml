@@ -46,4 +46,5 @@
 	
 	<haxelib name="nme" />
 	<haxelib name="flixel"/>
+	<haxelib name="gamepad-haxe" />
 </project>
